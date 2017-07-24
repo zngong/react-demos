@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        *{margin: 0;padding: 0; list-style: none;}
+        .wrap{height: 340px;width: 790px;margin: 100px auto; position: relative;overflow: hidden;}
+        .wrap ul{position: absolute;width: 3950px;}
+        .wrap ul li{height: 340px;float:left;}
+        .wrap ol{position: absolute;bottom: 10px; margin-left: 35%;}
+
+        .wrap ol li{
+            float:left;
+            height: 8px;
+            width: 10px;
+            margin-left: 30px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            cursor: pointer;
+            background-color:rgba(255,255,255,.5);
+            transition: all .25s;
+        }
+        .wrap ol li.active{
+            border-radius: 50%;
+            color: #fff;
+            background-color:rgba(0,0,0,.2);
+        }
+        .wrap ol li:hover{
+            border-radius: 50%;
+            color: #fff;
+            background-color:rgba(0,0,0,.2);
+            transform: scale(1.3);
+        }
+    </style>
+    <script src="../build/react.js"></script>
+    <script src="../build/react-dom.js"></script>
+    <script src="../build/browser.min.js"></script>
+    <script src="../build/jquery.min.js"></script>
+</head>
+<body>
+<div class="wrap" id="wrap"></div>
+<script type="text/babel">
+    var imgs = ['img/1.jpg','img/2.jpg','img/3.jpg','img/4.jpg','img/5.jpg']
+    var Carusel = React.createClass({
+        getInitialState:function () {
+            return {
+                index : 0,
+                timer : null,
+                wrap  : {},
+                pic   : {},
+                list  : [],
+            }
+        },
+        autoPlay:function() {
+            this.state.index++;
+            if (this.state.index >= this.state.list.length) {
+                this.state.index = 0;
+            }
+            this.handle(this.state.index);
+        },
+        change:function (index) {
+            this.state.index = index
+            clearInterval(this.timer);
+            this.handle(index)
+        },
+        handle:function (index) {
+            for(var j=0;j<this.state.list.length;j++){
+                if(j != index){
+                    this.state.list[j].className='';
+                }else{
+                    this.state.list[j].className='active';
+                }
+            }
+            $("#pic").stop(true, false).animate({left: -index * 790 + 'px'}, 500, function () {
+
+            })
+
+        },
+        componentDidMount:function () {// componentDidMount 当组件输出完成后执行该方法
+            this.state.wrap = document.getElementById('wrap');
+            this.state.pic = document.getElementById('pic');
+            this.state.list = document.getElementById('list').getElementsByTagName('li');
+            this.state.list[0].className='active';
+            this.timer = setInterval(this.autoPlay, 3000);
+            var obj = this;
+            for(var i=0;i<this.state.list.length;i++){
+                this.state.list[i].id=i;
+                this.state.list[i].onmouseover=function(){
+                    clearInterval(this.timer);
+                    obj.change(this.id);
+                }
+            }
+        },
+        render:function () {//render 用于输出组件，这是必须的一个属性
+            return (
+                    <div>
+                        <ul id="pic" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+                            {
+                                imgs.map(function (img,index) {
+                                    return <li key={index}><img src={img}></img></li>
+                                })
+                            }
+                        </ul>
+                        <ol id="list">
+                            {
+                                imgs.map(function (img,index) {
+                                    return <li key={index}></li>
+                                })
+                            }
+                        </ol>
+                    </div>
+
+            )
+        },
+        onMouseEnter:function () {
+            clearInterval(this.timer);
+        },
+        onMouseLeave:function () {
+            this.timer=setInterval(this.autoPlay,3000);
+        }
+    });
+    ReactDOM.render(
+            <Carusel/>,
+            document.getElementById('wrap')
+    )
+</script>
+</body>
+</html>
