@@ -1,16 +1,14 @@
 This is a simple demos of React.js.
 
-## How to use
+## How to use and matters need attention
 
-First copy the demos into your disk.
+Copy the demos code to the hard disk to run
 
 ```bash
 $ git clone https://github.com/zngong/react-demos.git
 ```
 
-Then play with the source files under the repo's demo* directories.
-
-## HTML Template
+## Demo HTML Template
 
 ```html
 <!DOCTYPE html>
